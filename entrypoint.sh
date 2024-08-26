@@ -17,16 +17,21 @@ build() {
 
 git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-build $INPUT_BASE_REF
-build $INPUT_HEAD_REF
+build "$INPUT_BASE_REF"
+build "$INPUT_HEAD_REF"
 
-diff="$(git diff --no-index "$build_dir/$INPUT_BASE_REF" "$build_dir/$INPUT_HEAD_REF")"
-escaped_output=$diff # TODO Escape output
+diffoscope "$build_dir/$INPUT_BASE_REF" "$build_dir/$INPUT_HEAD_REF" --markdown diff.md --exclude-directory-metadata=recursive || true
+output=$(cat diff.md)
 
 # If escaped output is longer than 65000 characters return "output to large to print as a github comment"
-if [ ${#escaped_output} -gt 65000 ]; then
-	escaped_output="Output is greater than 65000 characters, and therefore too large to print as a github comment."
+if [ ${#output} -gt 65000 ]; then
+	output="Output is greater than 65000 characters, and therefore too large to print as a github comment."
 fi
 
-echo "diff=$escaped_output" >>"$GITHUB_OUTPUT"
+{
+	echo 'diff<<EOF'
+	echo "$output"
+	echo 'EOF'
+} >>"$GITHUB_OUTPUT"
+
 exit 0

@@ -15,11 +15,14 @@ jobs:
         uses: ./
         with:
           base_ref: 027b33661ae3211230e8cd03d19df49ba620b379
-          head_ref: b887e3e0a09cc67b0d12c1d16200955cdf0f767a
+          head_ref: 182a672418c5bae4d6b7ca1244da5f28bf5ff6f0
           kustomizations: |-
             testdata/prod
             testdata/stage
       - run: echo "${{ steps.test-action.outputs.diff }}"
       - uses: mshick/add-pr-comment@v2
         with:
-          message: "```${{ steps.test-action.outputs.diff }}```"
+          message: |
+            ```diff
+            ${{ steps.test-action.outputs.diff }}
+            ```
