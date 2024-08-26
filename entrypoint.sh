@@ -11,7 +11,10 @@ build() {
 	for target in $INPUT_KUSTOMIZATIONS; do
 		echo "Building $target" to "$build_dir/$ref/$target"
 		mkdir -p "$build_dir/$ref/$target"
-		kustomize build "$target" -o "$build_dir/$ref/$target"
+		pwd
+		ls -al
+		ls -l "$target"
+		kustomize build "$target" -o "$build_dir/$ref/$target/"
 	done
 }
 
