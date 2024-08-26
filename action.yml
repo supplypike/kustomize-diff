@@ -1,0 +1,17 @@
+name: "kustomize-diff"
+description: "Kustomize build and diff action"
+inputs:
+  base_ref:
+    description: "Ref for PR base"
+    required: true
+    default: ${{ github.base_ref }}
+  head_ref:
+    description: "Ref for PR head"
+    required: true
+    default: ${{ github.head_ref }}
+outputs:
+  diff:
+    description: "Git diff"
+runs:
+  using: "docker"
+  image: "Dockerfile"
