@@ -11,3 +11,5 @@ spec:
         kind: GitRepository
         name: gitops
   interval: 1h
+  values:
+    foo: true
