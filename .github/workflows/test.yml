@@ -19,10 +19,6 @@ jobs:
           kustomizations: |-
             testdata/prod
             testdata/stage
-      - run: echo "${{ steps.test-action.outputs.diff }}"
       - uses: mshick/add-pr-comment@v2
         with:
-          message: |
-            ```diff
-            ${{ steps.test-action.outputs.diff }}
-            ```
+          message: ${{ steps.test-action.outputs.diff }}

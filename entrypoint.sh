@@ -20,13 +20,20 @@ git config --global --add safe.directory "$GITHUB_WORKSPACE"
 build "$INPUT_BASE_REF"
 build "$INPUT_HEAD_REF"
 
-diffoscope "$build_dir/$INPUT_BASE_REF" "$build_dir/$INPUT_HEAD_REF" --markdown diff.md --exclude-directory-metadata=recursive || true
-output=$(cat diff.md)
+base_ref_build_dir="$build_dir/$INPUT_BASE_REF"
+head_ref_build_dir="$build_dir/$INPUT_HEAD_REF"
 
-# If escaped output is longer than 65000 characters return "output to large to print as a github comment"
-if [ ${#output} -gt 65000 ]; then
-	output="Output is greater than 65000 characters, and therefore too large to print as a github comment."
-fi
+set +e
+for target in $INPUT_KUSTOMIZATIONS; do
+	diffoscope "$base_ref_build_dir/$target" "$head_ref_build_dir/$target" \
+		--markdown - \
+		--exclude-directory-metadata=yes | tee -a diff.md
+done
+
+set -e
+
+# Formatting hacks
+output=$(cat diff.md | sed "s|$base_ref_build_dir/||" | sed '/Comparing/ s/&.*$//' | sed "s|^#\{2,\} Comparing| Comparing|" | sed "s|^# Comparing|## Comparing|")
 
 {
 	echo 'diff<<EOF'

@@ -23,7 +23,7 @@ inputs:
     default: ""
 outputs:
   diff:
-    description: "Kustomize diff"
+    description: "Kustomize diff in markdown"
 runs:
   using: "docker"
   image: "Dockerfile"
