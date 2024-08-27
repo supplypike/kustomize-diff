@@ -2,16 +2,28 @@ name: "kustomize-diff"
 description: "Kustomize build and diff action"
 inputs:
   base_ref:
-    description: "Ref for PR base"
+    description: "Git ref for PR base"
     required: true
     default: ${{ github.base_ref }}
   head_ref:
-    description: "Ref for PR head"
+    description: "Git ref for PR head"
     required: true
     default: ${{ github.head_ref }}
+  kustomizations:
+    description: |-
+      Kustomization directories
+
+      You can specify multiple directories by separating them with a newline:
+      ```yaml
+      kustomizations: |-
+        testdata/prod
+        testdata/stage
+      ```
+    required: true
+    default: ""
 outputs:
   diff:
-    description: "Git diff"
+    description: "Kustomize diff in markdown"
 runs:
   using: "docker"
   image: "Dockerfile"

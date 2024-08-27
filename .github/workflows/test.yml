@@ -9,6 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - id: test-action
         uses: ./
-      - run: echo "${{ steps.test-action.outputs.diff }}"
+        with:
+          base_ref: 027b33661ae3211230e8cd03d19df49ba620b379
+          head_ref: 182a672418c5bae4d6b7ca1244da5f28bf5ff6f0
+          kustomizations: |-
+            testdata/prod
+            testdata/stage
+      - uses: mshick/add-pr-comment@v2
+        with:
+          message: ${{ steps.test-action.outputs.diff }}
