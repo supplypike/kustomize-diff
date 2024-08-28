@@ -4,8 +4,6 @@ set -eux
 
 build_dir=$(mktemp -d)
 
-echo $INPUT_KUSTOMIZATIONS
-
 build() {
 	ref="$1"
 	git checkout "$1" --quiet
@@ -36,6 +34,14 @@ set -e
 
 # Formatting hacks
 output=$(cat diff.md | sed "s|$base_ref_build_dir/||" | sed '/Comparing/ s/&.*$//' | sed "s|^#\{2,\} Comparing| Comparing|" | sed "s|^# Comparing|## Comparing|")
+
+if [ ${#output} -gt 65535 ]; then
+	output="Kustomize diff too large to display"
+fi
+
+if [ -z "$output" ]; then
+	output="Kustomize diff did not find any differences"
+fi
 
 {
 	echo 'diff<<EOF'

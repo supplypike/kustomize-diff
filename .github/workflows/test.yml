@@ -11,19 +11,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - id: find
-        run: |
-          {
-            echo 'kustomizations<<EOF'
-            find testdata/* -maxdepth 1 -type d -not -name "*base"
-            echo EOF
-          } >>"$GITHUB_OUTPUT"
       - id: test-action
         uses: ./
         with:
           base_ref: 027b33661ae3211230e8cd03d19df49ba620b379
           head_ref: 182a672418c5bae4d6b7ca1244da5f28bf5ff6f0
-          kustomizations: ${{ steps.find.outputs.kustomizations }}
+          kustomizations: |-
+            testdata/prod
+            testdata/stage
       - uses: mshick/add-pr-comment@v2
         with:
           message: ${{ steps.test-action.outputs.diff }}
