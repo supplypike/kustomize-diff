@@ -4,6 +4,8 @@ set -eux
 
 build_dir=$(mktemp -d)
 
+echo $INPUT_KUSTOMIZATIONS
+
 build() {
 	ref="$1"
 	git checkout "$1" --quiet
