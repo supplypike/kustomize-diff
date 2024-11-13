@@ -1,2 +1,1 @@
-The point of this folder is to test that if the base commit does not contain this folder,
-the action is still successful
+The point of this folder is to test that if the base commit does not contain this folder, the action is still successful
