@@ -4,12 +4,28 @@ set -eux
 
 build_dir=$(mktemp -d)
 
-build() {
-	ref="$1"
-	git checkout "$1" --quiet
+build_base() {
+	ref="$INPUT_BASE_REF"
+	git checkout "$ref" --quiet
 
 	for target in $INPUT_KUSTOMIZATIONS; do
-		echo "Building $target" to "$build_dir/$ref/$target"
+		echo "Building base $target" to "$build_dir/$ref/$target"
+		mkdir -p "$build_dir/$ref/$target"
+		if [ ! -d "$target" ]; then
+			echo "Base $target does not exist. Treating it as an empty dir"
+			mkdir -p "$target"
+		else
+			kustomize build "$target" -o "$build_dir/$ref/$target/"
+		fi
+	done
+}
+
+build_head() {
+	ref="$INPUT_HEAD_REF"
+	git checkout "$ref" --quiet
+
+	for target in $INPUT_KUSTOMIZATIONS; do
+		echo "Building head $target" to "$build_dir/$ref/$target"
 		mkdir -p "$build_dir/$ref/$target"
 		kustomize build "$target" -o "$build_dir/$ref/$target/"
 	done
@@ -17,8 +33,8 @@ build() {
 
 git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-build "$INPUT_BASE_REF"
-build "$INPUT_HEAD_REF"
+build_base
+build_head
 
 base_ref_build_dir="$build_dir/$INPUT_BASE_REF"
 head_ref_build_dir="$build_dir/$INPUT_HEAD_REF"
